@@ -22,16 +22,16 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <iomanip> // setprecision
+#include <iomanip>
 
 using namespace std;
 
 string FloatToFixedString(float);
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
     
     // Check of arguments
-    if (argc != 9){
+    if (argc != 9) {
         cout << "\nObjective: Transforms all X Y Z coordinates of a .gro topology file.";
         cout << "\nUsage: groTransform SOURCE.gro TARGET.gro OPERATION X_VALUE OPERATION Y_VALUE OPERATION Z_VALUE \n" << endl ;
         cout << "\tOPERATION: (p)lus, (m)inus, (t)imes, (d)ivision." << endl;
@@ -49,20 +49,17 @@ int main(int argc, char *argv[]){
     string OPERATION_Z(argv[7]);
     
     // Perform some basic sanity checks
-    if ((OPERATION_X != "p") && (OPERATION_X != "m") && (OPERATION_X != "t") && (OPERATION_X != "d"))
-    {
+    if ((OPERATION_X != "p") && (OPERATION_X != "m") && (OPERATION_X != "t") && (OPERATION_X != "d")) {
         cout << "\nInvalid operation!" << endl;
         return 1;
     }
     
-    if ((OPERATION_Y != "p") && (OPERATION_Y != "m") && (OPERATION_Y != "t") && (OPERATION_Y != "d"))
-    {
+    if ((OPERATION_Y != "p") && (OPERATION_Y != "m") && (OPERATION_Y != "t") && (OPERATION_Y != "d")) {
         cout << "\nInvalid operation!" << endl;
         return 1;
     }
     
-    if ((OPERATION_Z != "p") && (OPERATION_Z != "m") && (OPERATION_Z != "t") && (OPERATION_Z != "d"))
-    {
+    if ((OPERATION_Z != "p") && (OPERATION_Z != "m") && (OPERATION_Z != "t") && (OPERATION_Z != "d")) {
         cout << "\nInvalid operation!" << endl;
         return 1;
     }
@@ -89,7 +86,7 @@ int main(int argc, char *argv[]){
      // Count the number of lines copied
     int iLines = 0;
     
-    if (ifile_source.is_open()){
+    if (ifile_source.is_open()) {
         
         getline(ifile_source, sLine); // Get first line and copy it to target
         ofile_target << sLine << '\n';
@@ -97,26 +94,28 @@ int main(int argc, char *argv[]){
         getline(ifile_source, sLine); // Get second line and copy it to target
         ofile_target << sLine << '\n';
         
-        //cout << "\nConverting now:";
-        
-        while (!ifile_source.eof()){
+        while (!ifile_source.eof()) {
             
-            z=99999; //initialise everytime to be able to find last line
+            // Initialise everytime to be able to find last line
+            z=99999;
             
             getline(ifile_source, sLine);
             
             
             // residue number (5 positions, integer); residue name (5 characters)
             // atom name (5 characters); atom number (5 positions, integer)
-            sDummy = sLine.substr(0, 20); // Copy first 4 fields
             
-            // position (in nm, x y z in 3 columns, each 8 positions with 3 decimal places)
+            // Copy first 4 fields
+            sDummy = sLine.substr(0, 20);
+            
+            // Position (in nm, x y z in 3 columns, each 8 positions with 3 decimal places)
             sPosition = sLine.substr(20, 24);
             
             istringstream ssLine(sPosition);
             ssLine >> x >> y >> z;
 
-            if (z == 99999){ // This is for copying and writing the last line
+            // This is for copying and writing the last line
+            if (z == 99999) {
                 ofile_target << sDummy << sPosition << '\n';
                 break;
             }
@@ -141,9 +140,9 @@ int main(int argc, char *argv[]){
             //"%5d%-5s%5s%5d%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f"
             //Copy 0 - 20 for 4 first columns 8.4 for the last 3 x y z
             
-            if (!sLine.empty() && z != 99999){
+            if (!sLine.empty() && z != 99999) {
                 ofile_target << sDummy << FloatToFixedString(x) << FloatToFixedString(y) << FloatToFixedString(z) << '\n';
-                iLines++;
+                ++iLines;
             }
         }
             
@@ -158,21 +157,19 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-string FloatToFixedString(float num){
+string FloatToFixedString(const float num){
     
     ostringstream sNum;
     sNum << fixed << setprecision(3) << num;
     
     string s(sNum.str());
-    string rNum = "";
+    string sFixedFormatNumber = "";
     
-    int sLen = s.length();
-    
-    for (int i=0; i < (10-sLen-2); i++){
-        rNum += " ";
+    for (int i=0; i < (10-s.length()-2); ++i) {
+        sFixedFormatNumber += " ";
     }
     
-    rNum += s;
+    sFixedFormatNumber += s;
     
-    return rNum;
+    return sFixedFormatNumber;
 }
