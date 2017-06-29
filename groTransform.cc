@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2016-2017 by Antonios Gouglidis			   			   *
+ *   Copyright (C) 2017 by Antonios Gouglidis                              *
  *   e-mail: agouglidis@gmail.com   					   				   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
